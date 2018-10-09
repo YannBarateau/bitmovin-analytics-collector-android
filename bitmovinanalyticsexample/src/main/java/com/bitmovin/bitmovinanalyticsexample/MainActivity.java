@@ -10,7 +10,9 @@ import com.bitmovin.analytics.bitmovin.player.BitmovinPlayerCollector;
 import com.bitmovin.analytics.enums.CDNProvider;
 import com.bitmovin.player.BitmovinPlayer;
 import com.bitmovin.player.BitmovinPlayerView;
+import com.bitmovin.player.config.drm.DRMSystems;
 import com.bitmovin.player.config.media.SourceConfiguration;
+import com.bitmovin.player.config.media.SourceItem;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -66,9 +68,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Create a new source configuration
         SourceConfiguration sourceConfiguration = new SourceConfiguration();
 
-        // Add a new source item
-        sourceConfiguration.addSourceItem("https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd");
-
+        // Add a new DRM source item
+        SourceItem drmSourceItem = new SourceItem("https://bitmovin-a.akamaihd.net/content/art-of-motion_drm/mpds/11331.mpd");
+        drmSourceItem.addDRMConfiguration(DRMSystems.WIDEVINE_UUID, "https://widevine-proxy.appspot.com/proxy");
+        sourceConfiguration.addSourceItem(drmSourceItem);
 
         //Step 4: Attach BitmovinPlayer
         bitmovinAnalytics.attachPlayer(bitmovinPlayer);

@@ -42,12 +42,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-//    compile project(path: ':collector')
-//    compile project(path: ':collector-bitmovin-player')
+    compile project(path: ':collector')
+    compile project(path: ':collector-bitmovin-player')
     implementation 'com.bitmovin.player:playercore:2.+'
 
 //    implementation 'com.bitmovin.analytics:collector:1.4.0'
-    implementation 'com.bitmovin.analytics:collector-bitmovin-player:1.4.1'
+//    implementation 'com.bitmovin.analytics:collector-bitmovin-player:1.4.1'
 
 }
 

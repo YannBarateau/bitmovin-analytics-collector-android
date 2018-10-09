@@ -35,8 +35,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    api 'com.bitmovin.analytics:collector:1.4.1'
-    api 'com.bitmovin.player:playercore:2.+'
+    api project(path: ':collector')
+    //api 'com.bitmovin.analytics:collector:1.4.1'
+    api 'com.bitmovin.player:playercore:2.15+'
 
 }
 
