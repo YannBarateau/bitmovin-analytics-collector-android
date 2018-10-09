@@ -39,4 +39,8 @@ public class Util {
     public static String getLocale() {
         return Resources.getSystem().getConfiguration().locale.toString();
     }
+
+    public static long convertToMilliseconds(double seconds) {
+        return Math.round(seconds * 1000);
+    }
 }

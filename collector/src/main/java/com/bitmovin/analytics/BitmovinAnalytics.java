@@ -2,6 +2,7 @@ package com.bitmovin.analytics;
 
 import android.util.Log;
 import com.bitmovin.analytics.adapters.PlayerAdapter;
+import com.bitmovin.analytics.data.DrmPerformanceInfo;
 import com.bitmovin.analytics.data.ErrorCode;
 import com.bitmovin.analytics.data.EventData;
 import com.bitmovin.analytics.data.IEventDataDispatcher;
@@ -67,7 +68,7 @@ public class BitmovinAnalytics implements StateMachineListener, LicenseCallback 
   }
 
   @Override
-  public void onStartup(long duration) {
+  public void onStartup(long duration, DrmPerformanceInfo drmInfo) {
     Log.d(TAG, String.format("onStartup %s", playerStateMachine.getImpressionId()));
     EventData data = playerAdapter.createEventData();
     data.setState("startup");
@@ -80,6 +81,10 @@ public class BitmovinAnalytics implements StateMachineListener, LicenseCallback 
 
     data.setVideoTimeStart(playerStateMachine.getVideoTimeStart());
     data.setVideoTimeEnd(playerStateMachine.getVideoTimeEnd());
+    if (drmInfo.isDrmUsed()) {
+      data.setDrmType(drmInfo.getDrmType());
+      data.setDrmLoadTime(drmInfo.getDrmLoadTime());
+    }
     sendEventData(data);
   }
 

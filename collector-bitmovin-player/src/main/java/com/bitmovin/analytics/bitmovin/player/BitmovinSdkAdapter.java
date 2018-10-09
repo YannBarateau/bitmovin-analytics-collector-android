@@ -16,6 +16,7 @@ import com.bitmovin.analytics.stateMachines.PlayerState;
 import com.bitmovin.analytics.stateMachines.PlayerStateMachine;
 import com.bitmovin.analytics.utils.Util;
 import com.bitmovin.player.*;
+import com.bitmovin.player.api.event.data.DownloadFinishedEvent;
 import com.bitmovin.player.api.event.data.ErrorEvent;
 import com.bitmovin.player.api.event.data.PausedEvent;
 import com.bitmovin.player.api.event.data.PlayEvent;
@@ -28,6 +29,7 @@ import com.bitmovin.player.api.event.data.SourceUnloadedEvent;
 import com.bitmovin.player.api.event.data.StallEndedEvent;
 import com.bitmovin.player.api.event.data.StallStartedEvent;
 import com.bitmovin.player.api.event.data.VideoPlaybackQualityChangedEvent;
+import com.bitmovin.player.api.event.listener.OnDownloadFinishedListener;
 import com.bitmovin.player.api.event.listener.OnErrorListener;
 import com.bitmovin.player.api.event.listener.OnPausedListener;
 import com.bitmovin.player.api.event.listener.OnPlayListener;
@@ -40,6 +42,7 @@ import com.bitmovin.player.api.event.listener.OnSourceUnloadedListener;
 import com.bitmovin.player.api.event.listener.OnStallEndedListener;
 import com.bitmovin.player.api.event.listener.OnStallStartedListener;
 import com.bitmovin.player.api.event.listener.OnVideoPlaybackQualityChangedListener;
+import com.bitmovin.player.config.network.HttpRequestType;
 import com.bitmovin.player.config.quality.VideoQuality;
 
 public class BitmovinSdkAdapter implements PlayerAdapter {
@@ -78,6 +81,7 @@ public class BitmovinSdkAdapter implements PlayerAdapter {
         this.bitmovinPlayer.addEventListener(onReadyListener);
         this.bitmovinPlayer.addEventListener(onVideoPlaybackQualityChangedListener);
         this.bitmovinPlayer.addEventListener(onErrorListener);
+        this.bitmovinPlayer.addEventListener(onDownloadFinishedListener);
     }
 
     private void removePlayerListener() {
@@ -95,6 +99,7 @@ public class BitmovinSdkAdapter implements PlayerAdapter {
         this.bitmovinPlayer.removeEventListener(onReadyListener);
         this.bitmovinPlayer.removeEventListener(onVideoPlaybackQualityChangedListener);
         this.bitmovinPlayer.removeEventListener(onErrorListener);
+        this.bitmovinPlayer.removeEventListener(onDownloadFinishedListener);
     }
 
     private String getUserAgent(Context context) {
@@ -265,6 +270,20 @@ public class BitmovinSdkAdapter implements PlayerAdapter {
                 PlayerState originalState = stateMachine.getCurrentState();
                 stateMachine.transitionState(PlayerState.QUALITYCHANGE, getPosition());
                 stateMachine.transitionState(originalState, getPosition());
+            }
+        }
+    };
+
+    private OnDownloadFinishedListener onDownloadFinishedListener = new OnDownloadFinishedListener() {
+        @Override
+        public void onDownloadFinished(DownloadFinishedEvent downloadFinishedEvent) {
+            Log.d(TAG, "On DownloadFinished");
+            String downloadType = downloadFinishedEvent.getDownloadType().toString();
+            if (downloadType.startsWith("drm/license/")) {
+                Log.d(TAG, "On DRM License finished");
+                stateMachine.getDrmPerformanceInfo().setDrmUsed(true);
+                stateMachine.getDrmPerformanceInfo().setDrmType(downloadType.replace("drm/license/", ""));
+                stateMachine.getDrmPerformanceInfo().setDrmLoadTime(Util.convertToMilliseconds(downloadFinishedEvent.getDownloadTime()));
             }
         }
     };

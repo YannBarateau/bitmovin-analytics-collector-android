@@ -47,7 +47,7 @@ public enum PlayerState {
             if (machine.getFirstReadyTimestamp() == 0) {
                 machine.setFirstReadyTimestamp(Util.getTimeStamp());
                 for (StateMachineListener listener : machine.getListeners()) {
-                    listener.onStartup(machine.getStartupTime());
+                    listener.onStartup(machine.getStartupTime(), machine.getDrmPerformanceInfo());
                 }
             }
 
@@ -71,7 +71,7 @@ public enum PlayerState {
             if (machine.getFirstReadyTimestamp() == 0) {
                 machine.setFirstReadyTimestamp(Util.getTimeStamp());
                 for (StateMachineListener listener : machine.getListeners()) {
-                    listener.onStartup(machine.getStartupTime());
+                    listener.onStartup(machine.getStartupTime(), machine.getDrmPerformanceInfo());
                 }
             }
 

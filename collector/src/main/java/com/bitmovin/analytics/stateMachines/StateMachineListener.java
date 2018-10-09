@@ -1,12 +1,13 @@
 package com.bitmovin.analytics.stateMachines;
 
+import com.bitmovin.analytics.data.DrmPerformanceInfo;
 import com.bitmovin.analytics.data.ErrorCode;
 
 public interface StateMachineListener {
 
     void onSetup();
 
-    void onStartup(long duration);
+    void onStartup(long duration, DrmPerformanceInfo drmPerformanceInfo);
 
     void onPauseExit(long duration);
 

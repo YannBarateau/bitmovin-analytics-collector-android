@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.bitmovin.analytics.BitmovinAnalyticsConfig;
+import com.bitmovin.analytics.data.DrmPerformanceInfo;
 import com.bitmovin.analytics.data.ErrorCode;
 import com.bitmovin.analytics.utils.Util;
 
@@ -25,6 +26,7 @@ public class PlayerStateMachine {
     private String impressionId;
     private Handler heartbeatHandler = new Handler();
     private int heartbeatDelay = 59700; // default to 60 seconds
+    private DrmPerformanceInfo drmPerformanceInfo = new DrmPerformanceInfo();
 
     public PlayerStateMachine(BitmovinAnalyticsConfig config) {
         this.config = config;
@@ -56,6 +58,7 @@ public class PlayerStateMachine {
         this.impressionId = Util.getUUID();
         this.initialTimestamp = Util.getTimeStamp();
         this.firstReadyTimestamp = 0;
+        this.drmPerformanceInfo = new DrmPerformanceInfo();
         setCurrentState(PlayerState.SETUP);
     }
 
@@ -136,6 +139,9 @@ public class PlayerStateMachine {
         this.errorCode = errorCode;
     }
 
+    public DrmPerformanceInfo getDrmPerformanceInfo() {
+        return this.drmPerformanceInfo;
+    }
 }
 
 

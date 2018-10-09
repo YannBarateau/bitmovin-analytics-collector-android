@@ -60,6 +60,8 @@ public class EventData {
     private String m3u8Url;
     private String progUrl;
     private boolean isMuted = false;
+    private String drmType = null;
+    private Long drmLoadTime = null;
 
     public EventData(BitmovinAnalyticsConfig bitmovinAnalyticsConfig, String impressionId, String userAgent) {
         this.analyticsVersion = Util.getVersion();
@@ -317,5 +319,21 @@ public class EventData {
 
     public void setMuted(boolean muted) {
         this.isMuted = muted;
+    }
+
+    public String getDrmType() {
+        return drmType;
+    }
+
+    public void setDrmType(String drmType) {
+        this.drmType = drmType;
+    }
+
+    public Long getDrmLoadTime() {
+        return drmLoadTime;
+    }
+
+    public void setDrmLoadTime(Long drmLoadTime) {
+        this.drmLoadTime = drmLoadTime;
     }
 }
