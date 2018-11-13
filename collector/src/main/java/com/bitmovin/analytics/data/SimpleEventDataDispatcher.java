@@ -1,5 +1,7 @@
 package com.bitmovin.analytics.data;
 
+import android.util.Log;
+
 import com.bitmovin.analytics.BitmovinAnalyticsConfig;
 import com.bitmovin.analytics.utils.DataSerializer;
 import com.bitmovin.analytics.utils.HttpClient;
@@ -11,7 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseCallback {
-    private static final String TAG = "SimpleDispatcher";
+    private static final String TAG = "BitmovinAnalytics";
 
     private Queue<EventData> data;
     private HttpClient httpClient;
@@ -20,7 +22,7 @@ public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseC
     private LicenseCallback callback;
 
     public SimpleEventDataDispatcher(BitmovinAnalyticsConfig config, LicenseCallback callback) {
-        this.data = new ConcurrentLinkedQueue<EventData>();
+        this.data = new ConcurrentLinkedQueue<>();
         this.httpClient = new HttpClient(config.getContext(), BitmovinAnalyticsConfig.analyticsUrl);
         this.config = config;
         this.callback = callback;
@@ -29,6 +31,7 @@ public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseC
     @Override
     synchronized public void authenticationCompleted(boolean success) {
         if (success) {
+            Log.d(TAG, String.format("Authentication completed successfully - flushing %d samples to Server", data.size()));
             enabled = true;
             Iterator<EventData> it = data.iterator();
             while (it.hasNext()) {
@@ -51,6 +54,7 @@ public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseC
 
     @Override
     public void disable() {
+        Log.d(TAG, "Disabling EventDataDispatcher");
         this.data.clear();
         this.enabled = false;
     }
@@ -58,10 +62,14 @@ public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseC
     @Override
     public void add(EventData eventData) {
         if (enabled) {
-            this.httpClient.post(DataSerializer.serialize(eventData), null);
+            send(eventData);
         } else {
             this.data.add(eventData);
         }
+    }
+
+    private void send(EventData eventData) {
+        this.httpClient.post(DataSerializer.serialize(eventData), null);
     }
 
     @Override
