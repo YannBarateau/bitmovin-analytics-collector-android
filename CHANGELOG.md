@@ -18,3 +18,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Known Issues
 
+- Last sample when calling `detachPlayer()` is not being recorded correctly
