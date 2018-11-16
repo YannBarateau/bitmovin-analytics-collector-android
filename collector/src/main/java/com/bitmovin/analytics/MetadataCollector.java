@@ -16,6 +16,8 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
+
 import com.bitmovin.analytics.utils.PermissionHelper;
 
 
@@ -41,7 +43,7 @@ public class MetadataCollector {
   /** Returned by getNetwork() if Bluetooth */
   public static final int NETWORK_BLUETOOTH = 107;
 
-  private static final String PLATTFORM_NAME = "Android";
+  private static final String PLATFORM_NAME = "Android";
   private static final int ACCEPT_WIFI_RSSI_MIN = -113;
   public static final int SIGNAL_TYPE_NO_SIGNAL = 0;
   public static final int SIGNAL_TYPE_MOBILE = 1;
@@ -64,7 +66,6 @@ public class MetadataCollector {
   private String DEVICE;
   private String MODEL;
   private String PRODUCT;
-
   private String NETWORK_TYPE;
   private String IS_ROAMING;
 
@@ -80,7 +81,6 @@ public class MetadataCollector {
    *
    */
 
-  public MetadataCollector() {
   public MetadataCollector(Context context) {
     this.context = context;
 
@@ -153,4 +153,33 @@ public class MetadataCollector {
     }
     return result;
   }
+
+  private synchronized void initNetwork()
+  {
+    if (connectivityManager == null)
+    {
+      final ConnectivityManager tryConnectivityManager = (ConnectivityManager) context
+              .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+      final TelephonyManager tryTelephonyManager = (TelephonyManager) context
+              .getSystemService(Context.TELEPHONY_SERVICE);
+
+      final WifiManager tryWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+      // Assign to member vars only after all the get calls succeeded,
+
+      connectivityManager = tryConnectivityManager;
+      telephonyManager = tryTelephonyManager;
+      wifiManager = tryWifiManager;
+
+      final NetworkInfo[] infos = connectivityManager.getAllNetworkInfo();
+      for (final NetworkInfo networkInfo : infos)
+        Log.i(TAG, "Network: " + networkInfo);
+    }
+    assert connectivityManager != null;
+    assert telephonyManager != null;
+    assert wifiManager != null;
+  }
+
+
 }
