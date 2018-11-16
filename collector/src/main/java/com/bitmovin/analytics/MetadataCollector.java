@@ -1,6 +1,7 @@
 package com.bitmovin.analytics;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.location.LocationManager;
 import android.os.Build;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import com.bitmovin.analytics.utils.PermissionHelper;
 
 
 /**
@@ -66,12 +68,26 @@ public class MetadataCollector {
   private String NETWORK_TYPE;
   private String IS_ROAMING;
 
+  private Context context = null;
+
+  private static boolean haveCoarseLocationPermission;
+  private static boolean haveFineLocationPermission;
+  private static boolean haveReadPhoneStatePermission;
+  private static boolean haveAccessNetworkStatePermission;
+
   /**
    * MetadataCollector
    *
    */
 
   public MetadataCollector() {
+  public MetadataCollector(Context context) {
+    this.context = context;
+
+    haveCoarseLocationPermission = PermissionHelper.checkCoarseLocationPermission(context);
+    haveFineLocationPermission = PermissionHelper.checkFineLocationPermission(context);
+    haveReadPhoneStatePermission = PermissionHelper.checkReadPhoneStatePermission(context);
+    haveAccessNetworkStatePermission = PermissionHelper.checkAccessNetworkStatePermission(context);
 
   }
 
