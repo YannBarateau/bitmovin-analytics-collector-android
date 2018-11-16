@@ -67,6 +67,9 @@ public class MetadataCollector {
   private String MODEL;
   private String PRODUCT;
   private String NETWORK_TYPE;
+  private String OPERATOR_NAME;
+  private String MCCMNC_SIM;
+  private String MCCMNC_NW;
   private String IS_ROAMING;
 
   private Context context = null;
@@ -89,6 +92,16 @@ public class MetadataCollector {
     haveReadPhoneStatePermission = PermissionHelper.checkReadPhoneStatePermission(context);
     haveAccessNetworkStatePermission = PermissionHelper.checkAccessNetworkStatePermission(context);
 
+    this.init();
+
+  }
+
+  public void init () {
+    // reset();
+    initManagers();
+    setHardwareMetadata();
+    setNetworkMetadata();
+    // setLocationMetadata();
   }
 
   public void setHardwareMetadata() {
@@ -100,11 +113,14 @@ public class MetadataCollector {
   }
 
   public void setNetworkMetadata() {
-    NETWORK_TYPE = String.valueOf(getNetwork());
+    NETWORK_TYPE = String.valueOf(getNetworkType());
+    OPERATOR_NAME = telephonyManager.getSimOperatorName();
+    MCCMNC_SIM = telephonyManager.getSimOperator();
+    MCCMNC_NW = telephonyManager.getNetworkOperator();
     IS_ROAMING = String.valueOf(getRoaming());
   }
 
-  public int getNetwork()
+  public int getNetworkType()
   {
     int result = TelephonyManager.NETWORK_TYPE_UNKNOWN;
 
@@ -154,7 +170,7 @@ public class MetadataCollector {
     return result;
   }
 
-  private synchronized void initNetwork()
+  private synchronized void initManagers()
   {
     if (connectivityManager == null)
     {
@@ -166,7 +182,7 @@ public class MetadataCollector {
 
       final WifiManager tryWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
-      // Assign to member vars only after all the get calls succeeded,
+      // Assign to member vars only after all the get calls succeed
 
       connectivityManager = tryConnectivityManager;
       telephonyManager = tryTelephonyManager;
