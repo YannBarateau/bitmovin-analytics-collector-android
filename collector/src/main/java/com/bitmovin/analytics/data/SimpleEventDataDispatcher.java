@@ -69,6 +69,7 @@ public class SimpleEventDataDispatcher implements IEventDataDispatcher, LicenseC
     }
 
     private void send(EventData eventData) {
+        Log.d(TAG, String.format("Sending out sample with videoBitrate: %s", eventData.getVideoBitrate()));
         this.httpClient.post(DataSerializer.serialize(eventData), null);
     }
 
