@@ -44,7 +44,7 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
-    implementation "com.bitmovin.player:playercore:${project.playercoreVersion}"
+    implementation "com.bitmovin.player:playercore:${project.bitmovinPlayerCoreVersion}"
 
     // only needed if ads are used
     implementation "com.android.support:support-v4:${project.compileSdkVersion}.1.1"

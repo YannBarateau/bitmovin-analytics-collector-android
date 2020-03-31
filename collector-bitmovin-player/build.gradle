@@ -51,7 +51,7 @@ dependencies {
     } else {
         api "com.bitmovin.analytics:collector:${project.version}"
     }
-    implementation "com.bitmovin.player:playercore:${project.playercoreVersion}"
+    implementation "com.bitmovin.player:playercore:${project.bitmovinPlayerCoreVersion}"
 }
 
 publishing {
